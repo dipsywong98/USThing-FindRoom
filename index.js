@@ -1,10 +1,7 @@
-const cheerio = require('cheerio')
-
-var links = [];
-var all_courses = [];
-var $;
 
 /**
+ * output structure
+ * 
  * courses[
  *   course{
  *      title
@@ -19,6 +16,15 @@ var $;
  * ]
  */
 
+const cheerio = require('cheerio');
+var fs = require('fs');
+
+var links = [];
+var all_courses = [];
+var load_sum = 0;
+var $;
+
+
 var request = require('request');
 request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, body) {
     
@@ -26,11 +32,11 @@ request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, bod
 
     GetCourseLinks();
     // console.log(links);
-    // for(var i=0; i<links.length; i++){
-    //     GetCourseByURL(links[i]);
-    // }
+    for(var i=0; i<links.length; i++){
+        PushCoursesByURL(links[i]);
+    }
     
-     PushCoursesByURL('https://w5.ab.ust.hk/wcq/cgi-bin/1710/');
+    //  PushCoursesByURL('https://w5.ab.ust.hk/wcq/cgi-bin/1710/');
     
 });
 
@@ -54,16 +60,25 @@ function PushCoursesByURL(url){
 
         //for each course in courses
         for(var i=0; i<raw_courses.length; i++){
-            var course = $(raw_courses[i]); 
-            all_courses.push(BuildCourse(course));
+            var raw_course = $(raw_courses[i]); 
+            var sections = raw_course.find('tr').filter('[class!=""]');
+            all_courses.push({
+                title: GetInnerText(raw_course.find('h2')[0]),
+                sections: BuildSections(sections)
+            });
         }
-        
-        console.log(all_courses);
 
-        var title = GetInnerText(course.find('h2')[0]);
-        // console.log(title);
-        var sections = course.find('tr').filter('[class!=""]');
-        BuildSections(sections);
+        //loaded all courses
+        if(++load_sum==links.length){
+            fs.writeFile("courses.json", JSON.stringify({courses:all_courses}), function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+
+                console.log("The file was saved!");
+            }); 
+            // console.log(all_courses);
+        }
     })
 }
 
@@ -96,12 +111,4 @@ function BuildSections(raw_sections){
         }
     }
     return sections;
-}
-
-function BuildCourse(raw_course){
-    var sections = raw_course.find('tr').filter('[class!=""]');
-    return {
-        title: GetInnerText(raw_course.find('h2')[0]),
-        sections: BuildSections(sections)
-    }
 }
