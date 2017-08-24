@@ -2,17 +2,20 @@ const cheerio = require('cheerio')
 
 var links = [];
 var all_courses = [];
-// var $;
+var $;
 
 var request = require('request');
 request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, body) {
     
-    var $ = cheerio.load(body);
+    $ = cheerio.load(body);
 
     GetCourseLinks();
-    console.log(links);
-
-    GetCourseByURL(links[0]);
+    // console.log(links);
+    // for(var i=0; i<links.length; i++){
+    //     GetCourseByURL(links[i]);
+    // }
+    
+     GetCourseByURL('https://w5.ab.ust.hk/wcq/cgi-bin/1710/');
     
 });
 
@@ -30,20 +33,26 @@ request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, bod
 function GetCourseByURL(url){
     request(url ,function (error ,response ,body){  
 
-        var $ = cheerio.load(body);
+        $ = cheerio.load(body);
 
         var courses = $('div.course');
 
         //for each course in courses
         var course = $(courses[0]); 
-        var title = course.find('h2')[0].innerText;
+        var title = GetInnerText(course.find('h2')[0]);
         console.log(title);
         var sections = course.find('tr').filter('[class!=""]');
 
         //for each section in sections
         var details = $(sections[0]).find('td');
 
-        var name = details[0].innerText;
-        var time = details[1].innerText;
+        var name = GetInnerText(details[0]);
+        var time = GetInnerText(details[1]);
+        // console.log(name);
+        // console.log(time);
     })
+}
+
+function GetInnerText(element){
+    return element.children[0].data;
 }
