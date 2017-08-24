@@ -112,15 +112,24 @@ function BuildSections(raw_sections){
             //new section 
             sections.push({
                 name:GetInnerText(details[0]),
-                class:[]
+                classes:[]
             })
         }
         else{
             //if it is extened row for previous section
             details.splice(0,0,"");
         }
-
-        BuildClasses(sections[sections.length-1],details);
+        var section = sections[sections.length-1];
+        var _classes = BuildClasses(section,details);
+        if(_classes == "TBA"){
+            section.classes="TBA";
+        }
+        else{
+            while(_classes.length>0){
+                section.classes.push(_classes.pop());
+            }
+        }
+        
     }
     return sections;
 }
@@ -162,11 +171,10 @@ function BuildClasses(section,details){
             });
         }
         if(StrContain(str,":")){
-            console.log("hi");
             if(end_time == 0) end_time = str;
             else start_time = str;
         }
     }
-    console.log(classes);
+    // console.log(classes);
     return classes;
 }
