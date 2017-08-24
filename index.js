@@ -4,6 +4,21 @@ var links = [];
 var all_courses = [];
 var $;
 
+/**
+ * courses[
+ *   course{
+ *      title
+ *      sections[
+ *          name
+ *          class[
+ *              time
+ *              location
+ *          ]
+ *      ]
+ *   }
+ * ]
+ */
+
 var request = require('request');
 request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, body) {
     
@@ -42,6 +57,7 @@ function GetCourseByURL(url){
         var title = GetInnerText(course.find('h2')[0]);
         console.log(title);
         var sections = course.find('tr').filter('[class!=""]');
+        BuildSections(sections);
 
         //for each section in sections
         var details = $(sections[0]).find('td');
@@ -55,4 +71,27 @@ function GetCourseByURL(url){
 
 function GetInnerText(element){
     return element.children[0].data;
+}
+
+function BuildSections(raw_sections){
+    var sections = [];
+    for(var i=0; i<raw_sections.length; i++){
+        var details = $(raw_sections[i]).find('td');
+        if(raw_sections[i].attribs.class.indexOf('newsect') !== -1){
+            sections.push({
+                name:GetInnerText(details[0]),
+                class:[{
+                    time:GetInnerText(details[1]),
+                    location:GetInnerText(details[2])
+                }]
+            })
+        }
+        else{
+            sections[sections.length-1].class.push({
+                time:GetInnerText(details[0]),
+                location:GetInnerText(details[1])
+            })
+        }
+    }
+    return sections;
 }
