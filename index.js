@@ -24,6 +24,7 @@ moment().format();
 
 var links = [];
 var all_courses = [];
+var locations = [];
 var load_sum = 0;
 var $;
 
@@ -51,13 +52,13 @@ request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, bod
     
     $ = cheerio.load(body);
 
-    // GetCourseLinks();
-    // console.log(links);
-    // for(var i=0; i<links.length; i++){
-    //     PushCoursesByURL(links[i]);
-    // }
+    GetCourseLinks();
+    console.log(links);
+    for(var i=0; i<links.length; i++){
+        PushCoursesByURL(links[i]);
+    }
     
-     PushCoursesByURL('https://w5.ab.ust.hk/wcq/cgi-bin/1710/');
+    //  PushCoursesByURL('https://w5.ab.ust.hk/wcq/cgi-bin/1710/');
     
 });
 
@@ -92,6 +93,12 @@ function PushCoursesByURL(url){
         //loaded all courses
         if(++load_sum>=links.length){
             fs.writeFile("courses.json", JSON.stringify({courses:all_courses}), function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+            }); 
+            fs.writeFile("locations.json", JSON.stringify({locations:locations}), function(err) {
                 if(err) {
                     return console.log(err);
                 }
@@ -141,6 +148,10 @@ function BuildClasses(section,details){
     var note="N/A";
     var start_time = 0;
     var end_time = 0;
+
+    if(location!="TBA"&&locations.indexOf(location)==-1){
+        locations.push(location);
+    }
 
     if(time_str=="TBA"&&location=="TBA"){
         return "TBA";
