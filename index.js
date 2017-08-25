@@ -6,13 +6,23 @@
  *   course{
  *      title
  *      sections[
- *          name
- *          class[
- *              time
- *              location
- *          ]
+ *          name:
+ *          classes:[
+ *              class{
+ *                  start_time
+ *                  end_time
+ *                  location
+ *          }]
  *      ]
- *   }
+ *   }]
+ * 
+ *  week[
+ *      day[
+ *          time[
+ *              available_locations[
+ * ]
+ * ]
+ * ]
  * ]
  */
 
@@ -99,6 +109,12 @@ function PushCoursesByURL(url){
                 console.log("The file was saved!");
             }); 
             fs.writeFile("locations.json", JSON.stringify({locations:locations}), function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+            }); 
+            fs.writeFile("all.json", JSON.stringify({courses:all_courses,locations:locations}), function(err) {
                 if(err) {
                     return console.log(err);
                 }
