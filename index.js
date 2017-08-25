@@ -40,18 +40,35 @@ var $;
 
 var days = ["Mo","Tu","We","Th","Fr","Sa","Su"];
 
+// function BuildExpectedOutcomeString(raw_td){
+//     var str = '';
+//     var first_line = ''||GetInnerText(raw_td.find('span')[0]);
+//     str += first_line;
+//     var raw_tr = raw_td.find('tr');
+//     for(var i=0; i<raw_tr.length;i++){
+//         var raw_td = $(raw_tr[i]).find('td');
+//         for(var j=0; j<raw_td.length; j++){
+//             str += GetInnerText(raw_td[j]);
+//         }
+//         str += "|";
+//     }
+//     return str;
+// }
 
 function GetInnerText(element){
-    var text = "";
+    // console.log();console.log(element);
+    if(!element) return "ignored";
+    var str = '';
     for(var i=0; i<element.children.length; i++){
-        if(element.children[i].data){
-            text+=element.children[i].data;
-        }
-        else{
-            text+="|";
-        }
+        // console.log(i);
+        if(element.children[i].data) str += element.children[i].data
+        // if(element.children[i].type=='tag'&&element.children[i].name=='table'){
+        //     str += BuildExpectedOutcomeString($(element.children[i]));
+        // }
+        else str += '|';
     }
-    return text;
+    return str;
+    // return element.children[0].data.replace('<br>','|');
 }
 
 function StrContain(str1, str2){
@@ -96,6 +113,7 @@ function PushCoursesByURL(url){
             var sections = raw_course.find('tr').filter('[class!=""]');
             all_courses.push({
                 title: GetInnerText(raw_course.find('h2')[0]),
+                details:BuildDetails($(raw_course.find('.courseinfo')[0]).find('tbody')),
                 sections: BuildSections(sections)
             });
         }
@@ -204,4 +222,20 @@ function BuildClasses(section,details){
     }
     // console.log(classes);
     return classes;
+}
+
+function BuildDetails(raw_info){
+    details = {};
+    var raw_details = $(raw_info).find('tr');
+    // console.log(raw_details);
+    for(var i=0; i<raw_details.length; i++){
+        var td = $($(raw_details)[i]).find('td')[0];
+        // console.log(td,GetInnerText(td));
+        var th = $($(raw_details)[i]).find('th')[0];
+        // console.log(th,GetInnerText(td));
+        if(GetInnerText(th).split('|').length>1) continue;
+        details[GetInnerText(th)] = GetInnerText(td);
+    }
+    // console.log(details);
+    return details;
 }

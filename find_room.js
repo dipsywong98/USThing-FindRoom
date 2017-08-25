@@ -53,7 +53,7 @@ request(URL_courses_and_locations, function (error, response, body) {
         }
     }
 
-    fs.writeFile("places.json", JSON.stringify(week_available, null, 2), function(err) {
+    fs.writeFile("places.json", JSON.stringify(week_available), function(err) {
         if(err) {
             return console.log(err);
         }
