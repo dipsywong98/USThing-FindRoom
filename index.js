@@ -241,8 +241,7 @@ function BuildDetails(raw_info){
 
 function BuildHeading(h2_str){
     var course_code = h2_str.split(' - ')[0];
-    var course_name = h2_str.split(/[A-Z][A-Z][A-Z][A-Z] [0-9][0-9][0-9][0-9] - /g)[1];
-    if(!course_name) course_name = h2_str.split(/[A-Z][A-Z][A-Z][A-Z] [0-9][0-9][0-9][0-9][A-Z] - /g)[1]
+    var course_name = h2_str.split(/[A-Z]{4} [0-9]{4}[A-Z]* - /g)[1];
     console.log(course_code, " ", course_name);
     var [department,code] = course_code.split(' ');
     var [name,credit] = course_name.split(' (');
