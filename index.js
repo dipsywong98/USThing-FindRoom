@@ -5,8 +5,22 @@
  * courses[
  *   course{
  *      title
+ *      heading{
+ *          full_code,
+ *          department,
+ *          code,
+ *          name,
+ *          credit
+ *      }
  *      sections[
  *          name:
+ *          description:{   //its content is dynamic, some index may not exist
+ *              ATTRIBUTES,
+ *              EXCLUSION,
+ *              CO-REQUISITE,
+ *              PRE-REQUISITE,
+ *              DESCRIPTION,
+ *          }
  *          classes:[
  *              class{
  *                  start_time
@@ -33,6 +47,7 @@ var moment = require('moment');
 moment().format();
 
 var links = [];
+var courses_dict = {};
 var all_courses = [];
 var locations = [];
 var load_sum = 0;
@@ -40,35 +55,14 @@ var $;
 
 var days = ["Mo","Tu","We","Th","Fr","Sa","Su"];
 
-// function BuildExpectedOutcomeString(raw_td){
-//     var str = '';
-//     var first_line = ''||GetInnerText(raw_td.find('span')[0]);
-//     str += first_line;
-//     var raw_tr = raw_td.find('tr');
-//     for(var i=0; i<raw_tr.length;i++){
-//         var raw_td = $(raw_tr[i]).find('td');
-//         for(var j=0; j<raw_td.length; j++){
-//             str += GetInnerText(raw_td[j]);
-//         }
-//         str += "|";
-//     }
-//     return str;
-// }
-
 function GetInnerText(element){
-    // console.log();console.log(element);
     if(!element) return "ignored";
     var str = '';
     for(var i=0; i<element.children.length; i++){
-        // console.log(i);
         if(element.children[i].data) str += element.children[i].data
-        // if(element.children[i].type=='tag'&&element.children[i].name=='table'){
-        //     str += BuildExpectedOutcomeString($(element.children[i]));
-        // }
         else str += '|';
     }
     return str;
-    // return element.children[0].data.replace('<br>','|');
 }
 
 function StrContain(str1, str2){
@@ -111,11 +105,15 @@ function PushCoursesByURL(url){
         for(var i=0; i<raw_courses.length; i++){
             var raw_course = $(raw_courses[i]); 
             var sections = raw_course.find('tr').filter('[class!=""]');
-            all_courses.push({
+            var course = {
                 title: GetInnerText(raw_course.find('h2')[0]),
+                heading:BuildHeading(GetInnerText(raw_course.find('h2')[0])),
                 details:BuildDetails($(raw_course.find('.courseinfo')[0]).find('tbody')),
                 sections: BuildSections(sections)
-            });
+            };
+            all_courses.push(course);
+            courses_dict[course.heading.full_code] = course;
+
         }
 
         //loaded all courses
@@ -227,15 +225,28 @@ function BuildClasses(section,details){
 function BuildDetails(raw_info){
     details = {};
     var raw_details = $(raw_info).find('tr');
-    // console.log(raw_details);
     for(var i=0; i<raw_details.length; i++){
         var td = $($(raw_details)[i]).find('td')[0];
-        // console.log(td,GetInnerText(td));
         var th = $($(raw_details)[i]).find('th')[0];
-        // console.log(th,GetInnerText(td));
         if(GetInnerText(th).split('|').length>1) continue;
         details[GetInnerText(th)] = GetInnerText(td);
     }
-    // console.log(details);
     return details;
+}
+
+function BuildHeading(h2_str){
+    var course_code = h2_str.split(' - ')[0];
+    var course_name = h2_str.split(/[A-Z][A-Z][A-Z][A-Z] [0-9][0-9][0-9][0-9] - /g)[1];
+    if(!course_name) course_name = h2_str.split(/[A-Z][A-Z][A-Z][A-Z] [0-9][0-9][0-9][0-9][A-Z] - /g)[1]
+    console.log(course_code, " ", course_name);
+    var [department,code] = course_code.split(' ');
+    var [name,credit] = course_name.split(' (');
+    credit = credit.split(' unit')[0];
+    return {
+        full_code:course_code,
+        department:department,
+        code:code,
+        name:name,
+        credit:credit
+    }
 }
