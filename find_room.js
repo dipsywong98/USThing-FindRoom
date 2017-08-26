@@ -1,3 +1,24 @@
+/**find_room.js
+ * Copyright (c) USThing 2017
+ * 
+ * Author: Dipsy Wong(dipsywong98)
+ * Created on 2017-08-25
+ * 
+ * Generate places.json saying for each day in week, for each half hour, the available rooms in the next half hour
+ * 
+ * for days: 0 - sunday .. 6 - saturday
+ * for time: 8 - 0800AM .. 23.5 - 2330PM .. 0.5
+ * 
+ * output structure:
+ *  [
+ *      day[
+ *          time[
+ *              available_locations[]
+ *          ]
+ *      ]
+ * ]
+ */
+
 var request = require('request');
 const cheerio = require('cheerio');
 var fs = require('fs');

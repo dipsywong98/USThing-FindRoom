@@ -1,6 +1,18 @@
 
-/**
- * output structure
+/**index.js
+ * Copyright (c) USThing 2017
+ * 
+ * Author: Dipsy Wong(dipsywong98)
+ * Created on 2017-08-24
+ * 
+ * Generator of all courses json this semester
+ * 
+ * output files: 
+ * courses.json (all courses), 
+ * locations.json (all classroom which have courses), 
+ * all.json (combine of the previous two)
+ * 
+ * output structure:
  * 
  * courses[
  *   course{
@@ -30,14 +42,7 @@
  *      ]
  *   }]
  * 
- *  week[
- *      day[
- *          time[
- *              available_locations[
- * ]
- * ]
- * ]
- * ]
+ * 
  */
 
 var request = require('request');
