@@ -58,7 +58,31 @@ var locations = [];
 var load_sum = 0;
 var $;
 
-var days = ["Mo","Tu","We","Th","Fr","Sa","Su"];
+// var days = ["Mo","Tu","We","Th","Fr","Sa","Su"];
+var days = {
+    Su:"Sunday",
+    Mo:"Monday",
+    Tu:"Tuesday",
+    We:"Wednesday",
+    Th:"Thursday",
+    Fr:"Friday",
+    Sa:"Saturday"
+}
+
+var start_end_date = {
+    fall:{
+        start:"09-01",
+        end:"11-30"
+    },
+    spring:{
+        start:"02-01",
+        end:"05-09"
+    }
+};
+ var year;
+ var semester;
+ var start_date;
+ var end_date;
 
 function GetInnerText(element){
     if(!element) return "ignored";
@@ -77,6 +101,15 @@ function StrContain(str1, str2){
 request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, body) {
     
     $ = cheerio.load(body);
+
+    var semester_str = GetInnerText($('a[href="#"]')[0]);
+    [year,semester] = semester_str.split(' ');
+    if(semester.indexOf('Fall') === -1){
+        year = year.split('-')[0];
+    }
+    else{
+        year = '20'+year.split('-')[1];
+    }
 
     GetCourseLinks();
     console.log(links);
@@ -186,24 +219,27 @@ function BuildClasses(section,details){
     var start_time = 0;
     var end_time = 0;
 
+    //record new locations
     if(location!="TBA"&&locations.indexOf(location)==-1){
         locations.push(location);
     }
 
+    //no class
     if(time_str=="TBA"&&location=="TBA"){
         return "TBA";
     }
 
+    //split the date constrain and time
     if(StrContain(time_str,"|")){
-        var strs = time_str.split("|");
-        note = strs[0];
-        time_str = strs[1];
+        [note,stime_str] = time_str.split("|");
     }
 
-    for(var i=0; i<days.length; i++){
-        time_str = time_str.replace(days[i]," "+days[i]);
+    //split the week days
+    for(var day in days){
+        time_str = time_str.replace(day," "+day);
     }
     time_strs = time_str.split(" ");
+    // console.log(time_strs);
     // console.log(time_strs);
 
     for(var i=time_strs.length-1; i>0; --i){
@@ -211,9 +247,9 @@ function BuildClasses(section,details){
         if(StrContain("MoTuWeThFrSaSu",str)){
             //talking about week days
             classes.push({
-                day:str,
-                start_time: start_time,
-                end_time:end_time,
+                day:days[str],
+                start_time: moment(start_time,'hh:mma'),
+                end_time: moment(end_time,'hh:mma'),
                 location: location,
                 note: note
             });
@@ -247,7 +283,7 @@ function BuildHeading(h2_str){
     var [name,credit] = course_name.split(' (');
     credit = credit.split(' unit')[0];
     return {
-        full_code:course_code,
+        id:course_code.split(' ').join(''),
         department:department,
         code:code,
         name:name,
