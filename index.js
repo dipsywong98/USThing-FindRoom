@@ -24,6 +24,11 @@
  *          name,
  *          credit
  *      }
+ *      details{
+ *          pre-requisite
+ *          co-requisite
+ *          
+ *      }
  *      sections[
  *          name:
  *          description:{   //its content is dynamic, some index may not exist
@@ -77,6 +82,14 @@ var start_end_date = {
     spring:{
         start:"02-01",
         end:"05-09"
+    },
+    winter:{
+        start:"01-01",
+        end:"01-31"
+    },
+    summer:{
+        start:"06-18",
+        start:"08-15"
     }
 };
  var year;
@@ -112,7 +125,7 @@ request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, bod
     }
 
     GetCourseLinks();
-    console.log(links);
+    // console.log(links);
     for(var i=0; i<links.length; i++){
         PushCoursesByURL(links[i]);
     }
@@ -143,14 +156,13 @@ function PushCoursesByURL(url){
         for(var i=0; i<raw_courses.length; i++){
             var raw_course = $(raw_courses[i]); 
             var sections = raw_course.find('tr').filter('[class!=""]');
-            var course = {
-                title: GetInnerText(raw_course.find('h2')[0]),
-                heading:BuildHeading(GetInnerText(raw_course.find('h2')[0])),
-                details:BuildDetails($(raw_course.find('.courseinfo')[0]).find('tbody')),
-                sections: BuildSections(sections)
-            };
+            
+            var course = BuildHeading(GetInnerText(raw_course.find('h2')[0]));
+            course.details = BuildDetails($(raw_course.find('.courseinfo')[0]).find('tbody'));
+            course.sections= BuildSections(sections);
+            
             all_courses.push(course);
-            courses_dict[course.heading.full_code] = course;
+            courses_dict[course.id] = course;
 
         }
 
@@ -169,6 +181,12 @@ function PushCoursesByURL(url){
                 console.log("The file was saved!");
             }); 
             fs.writeFile("all.json", JSON.stringify({courses:all_courses,locations:locations}), function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+            }); 
+            fs.writeFile("courses_dict.json", JSON.stringify({courses:courses_dict}), function(err) {
                 if(err) {
                     return console.log(err);
                 }
@@ -239,17 +257,16 @@ function BuildClasses(section,details){
         time_str = time_str.replace(day," "+day);
     }
     time_strs = time_str.split(" ");
-    // console.log(time_strs);
-    // console.log(time_strs);
 
     for(var i=time_strs.length-1; i>0; --i){
         var str = time_strs[i];
         if(StrContain("MoTuWeThFrSaSu",str)){
             //talking about week days
+            console.log(start_time,moment(start_time,'hh:mma').format(),";",end_time,moment(end_time,'hh:mma').format())
             classes.push({
                 day:days[str],
-                start_time: moment(start_time,'hh:mma'),
-                end_time: moment(end_time,'hh:mma'),
+                start_time: moment(start_time,'hh:mma').format(),
+                end_time: moment(end_time,'hh:mma').format(),
                 location: location,
                 note: note
             });
@@ -278,7 +295,7 @@ function BuildDetails(raw_info){
 function BuildHeading(h2_str){
     var course_code = h2_str.split(' - ')[0];
     var course_name = h2_str.split(/[A-Z]{4} [0-9]{4}[A-Z]* - /g)[1];
-    console.log(course_code, " ", course_name);
+    // console.log(course_code, " ", course_name);
     var [department,code] = course_code.split(' ');
     var [name,credit] = course_name.split(' (');
     credit = credit.split(' unit')[0];
