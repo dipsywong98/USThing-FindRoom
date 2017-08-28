@@ -12,40 +12,37 @@
  * locations.json (all classroom which have courses), 
  * all.json (combine of the previous two)
  * 
- * output structure:
+ * output structure (course_dict):
  * 
- * courses[
- *   course{
- *      title
- *      heading{
- *          full_code,
- *          department,
- *          code,
- *          name,
- *          credit
- *      }
- *      details{
- *          pre-requisite
- *          co-requisite
- *          
+ * courses{
+ *   course_id:{
+ *      id,
+ *      department,
+ *      code,
+ *      name,
+ *      credit
+ *      details{            //its content is dynamic, some index may not exist
+ *          attrubutes[]
+ *          pre-requisite[{other: / course: }]
+ *          co-requisite[{other: / course: }]
+ *          exclusion[{other: / course: }]
+ *          description,
+ *          ...
  *      }
  *      sections[
  *          name:
- *          description:{   //its content is dynamic, some index may not exist
- *              ATTRIBUTES,
- *              EXCLUSION,
- *              CO-REQUISITE,
- *              PRE-REQUISITE,
- *              DESCRIPTION,
- *          }
+ *          class_number:
  *          classes:[
  *              class{
+ *                  day
  *                  start_time
  *                  end_time
  *                  location
+ *                  instructors[]
  *          }]
  *      ]
- *   }]
+ *   }
+ * }
  * 
  * 
  */
@@ -232,8 +229,10 @@ function BuildSections(raw_sections){
         var details = $(raw_sections[i]).find('td');
         if(StrContain(raw_sections[i].attribs.class,'newsect')){
             //new section 
+            var name_list = GetInnerText(details[0]).split(' ');
             sections.push({
-                name:GetInnerText(details[0]),
+                name:name_list[0],
+                class_number:name_list[1].split('(')[1].split(')')[0],
                 classes:[]
             })
         }
@@ -313,6 +312,7 @@ function BuildClasses(section,details){
                 start_time: start_time_moment.format(),
                 end_time: end_time_moment.format(),
                 location: location,
+                instructors:BuildInstructors(details[3]),
                 note: note
             });
         }
@@ -323,6 +323,15 @@ function BuildClasses(section,details){
     }
     // console.log(classes);
     return classes;
+}
+
+function BuildInstructors(raw_td){
+    var instructors = [];
+    var raw_a = $(raw_td).find('a');
+    for(var i=0; i<raw_a.length; i++){
+        instructors.push(GetInnerText(raw_a[i]));
+    }
+    return instructors;
 }
 
 function ShiftClassDay(start_time_moment, end_time_moment, weekday){
