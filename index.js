@@ -64,38 +64,58 @@ var load_sum = 0;
 var $;
 
 // var days = ["Mo","Tu","We","Th","Fr","Sa","Su"];
+//id,text
 var days = {
-    Su:"Sunday",
-    Mo:"Monday",
-    Tu:"Tuesday",
-    We:"Wednesday",
-    Th:"Thursday",
-    Fr:"Friday",
-    Sa:"Saturday"
+    Su:{
+        id:7,
+        text:"Sunday"
+    },
+    Mo:{
+        id:1,
+        text:"Monday"
+    },
+    Tu:{
+        id:2,
+        text:"Tuesday"
+    },
+    We:{
+        id:3,
+        text:"Wednesday"
+    },
+    Th:{
+        id:4,
+        text:"Thursday"
+    },
+    Fr:{
+        id:5,
+        text:"Friday"
+    },
+    Sa:{
+        id:6,
+        text:"Saturday"
+    }
 }
 
 var start_end_date = {
-    fall:{
-        start:"09-01",
-        end:"11-30"
+    Fall:{
+        start:"01-SEP-",
+        end:"30-NOV-"
     },
-    spring:{
-        start:"02-01",
-        end:"05-09"
+    Spring:{
+        start:"01-FEB-",
+        end:"09-MAY"
     },
-    winter:{
-        start:"01-01",
-        end:"01-31"
+    Winter:{
+        start:"02-JAN-",
+        end:"31-JAN-"
     },
-    summer:{
-        start:"06-18",
-        start:"08-15"
+    Summer:{
+        start:"18-JUN-",
+        start:"15-AUG-"
     }
 };
  var year;
  var semester;
- var start_date;
- var end_date;
 
 function GetInnerText(element){
     if(!element) return "ignored";
@@ -111,12 +131,15 @@ function StrContain(str1, str2){
     return str1.indexOf(str2) !== -1;
 }
 
-request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, body) {
+request('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/ACCT.html', function (error, response, body) {
     
     $ = cheerio.load(body);
 
-    var semester_str = GetInnerText($('a[href="#"]')[0]);
+    // console.log(body);
+
+    var semester_str = GetInnerText($('a[href*="#"]')[0]);
     [year,semester] = semester_str.split(' ');
+    // console.log(semester_str, year, semester);
     if(semester.indexOf('Fall') === -1){
         year = year.split('-')[0];
     }
@@ -124,13 +147,17 @@ request('https://w5.ab.ust.hk/wcq/cgi-bin/1710/', function (error, response, bod
         year = '20'+year.split('-')[1];
     }
 
-    GetCourseLinks();
+    console.log(year, semester);
+    // console.log(start_end_date,year,semester)
+
+    // GetCourseLinks();
     // console.log(links);
-    for(var i=0; i<links.length; i++){
-        PushCoursesByURL(links[i]);
-    }
+    // for(var i=0; i<links.length; i++){
+    //     PushCoursesByURL(links[i]);
+    // }
     
     //  PushCoursesByURL('https://w5.ab.ust.hk/wcq/cgi-bin/1710/');
+    PushCoursesByURL('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/ACCT.html')
     
 });
 
@@ -236,6 +263,7 @@ function BuildClasses(section,details){
     var note="N/A";
     var start_time = 0;
     var end_time = 0;
+    var start_date = 0;
 
     //record new locations
     if(location!="TBA"&&locations.indexOf(location)==-1){
@@ -247,10 +275,21 @@ function BuildClasses(section,details){
         return "TBA";
     }
 
+    console.log(time_str)
+
     //split the date constrain and time
     if(StrContain(time_str,"|")){
-        [note,stime_str] = time_str.split("|");
+        [note,time_str] = time_str.split("|");
+        [start_date,end_date] = note.split(" - ");
     }
+    else{
+        console.log(start_end_date, semester);
+        // [start_date,end_date] = start_end_date[semester];
+        start_date = start_end_date[semester].start+year;
+        end_date = start_end_date[semester].end+year;
+    }
+
+    console.log(start_date,end_date);
 
     //split the week days
     for(var day in days){
@@ -262,11 +301,17 @@ function BuildClasses(section,details){
         var str = time_strs[i];
         if(StrContain("MoTuWeThFrSaSu",str)){
             //talking about week days
-            console.log(start_time,moment(start_time,'hh:mma').format(),";",end_time,moment(end_time,'hh:mma').format())
+            var weekday = days[str].id;
+            var start_time_moment = moment(start_date+start_time,'DD-MMM-YYYYhh:mma');
+            var end_time_moment = moment(end_date+end_time,'DD-MMM-YYYYhh:mma');
+            ShiftClassDay(start_time_moment,end_time_moment,weekday);
+            
+            console.log(start_date,start_time_moment,end_date,end_time_moment,weekday)
+            // console.log(start_time,moment(start_time,'hh:mma').format(),";",end_time,moment(end_time,'hh:mma').format())
             classes.push({
-                day:days[str],
-                start_time: moment(start_time,'hh:mma').format(),
-                end_time: moment(end_time,'hh:mma').format(),
+                day:days[str].text,
+                start_time: start_time_moment.format(),
+                end_time: end_time_moment.format(),
                 location: location,
                 note: note
             });
@@ -278,6 +323,18 @@ function BuildClasses(section,details){
     }
     // console.log(classes);
     return classes;
+}
+
+function ShiftClassDay(start_time_moment, end_time_moment, weekday){
+    while(Number(start_time_moment.day())!=Number(weekday)%7){
+        console.log('start', start_time_moment.day() , weekday)
+        start_time_moment.add(1,'d');
+    }
+    while(Number(end_time_moment.day())!=Number(weekday)%7){
+        console.log('end', start_time_moment.day() , weekday)
+        end_time_moment.subtract(1,'d');
+    }
+    return [start_time_moment,end_time_moment];
 }
 
 function BuildDetails(raw_info){
