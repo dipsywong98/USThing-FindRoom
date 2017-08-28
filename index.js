@@ -140,14 +140,14 @@ request('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/COMP
     var semester_str = GetInnerText($('a[href*="#"]')[0]);
     [year,semester] = semester_str.split(' ');
     // console.log(semester_str, year, semester);
-    if(semester.indexOf('Fall') === -1){
+    if(semester.indexOf('Fall') !== -1){
         year = year.split('-')[0];
     }
     else{
         year = '20'+year.split('-')[1];
     }
 
-    // console.log(year, semester);
+    console.log(year, semester);
     // console.log(start_end_date,year,semester)
 
     // GetCourseLinks();
@@ -370,11 +370,13 @@ function BuildDetailsContent(index,content){
         case 'co-requisite':
         case 'pre-requisite':
         case 'exclusion':
+        case 'co-list with':
+        case 'previous code':
 
         list = content.split(/[\,,;]/g);
         content = [];
         for(var i=0; i<list.length; i++){
-            var course = list[i].match(/[A-Z]{4} [0-9]{4}[A-Z]*/g);
+            var course = list[i].match(/[A-Z]{4} [0-9]{3,4}[A-Z]*/g);
             if(course) content.push({course:course[0].split(' ').join('')});
             else content.push({other:list[i]});
         }
