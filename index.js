@@ -131,7 +131,7 @@ function StrContain(str1, str2){
     return str1.indexOf(str2) !== -1;
 }
 
-request('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/ACCT.html', function (error, response, body) {
+request('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/COMP.html', function (error, response, body) {
     
     $ = cheerio.load(body);
 
@@ -147,7 +147,7 @@ request('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/ACCT
         year = '20'+year.split('-')[1];
     }
 
-    console.log(year, semester);
+    // console.log(year, semester);
     // console.log(start_end_date,year,semester)
 
     // GetCourseLinks();
@@ -157,7 +157,7 @@ request('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/ACCT
     // }
     
     //  PushCoursesByURL('https://w5.ab.ust.hk/wcq/cgi-bin/1710/');
-    PushCoursesByURL('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/ACCT.html')
+    PushCoursesByURL('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/MATH.html')
     
 });
 
@@ -275,7 +275,7 @@ function BuildClasses(section,details){
         return "TBA";
     }
 
-    console.log(time_str)
+    // console.log(time_str)
 
     //split the date constrain and time
     if(StrContain(time_str,"|")){
@@ -283,13 +283,13 @@ function BuildClasses(section,details){
         [start_date,end_date] = note.split(" - ");
     }
     else{
-        console.log(start_end_date, semester);
+        // console.log(start_end_date, semester);
         // [start_date,end_date] = start_end_date[semester];
         start_date = start_end_date[semester].start+year;
         end_date = start_end_date[semester].end+year;
     }
 
-    console.log(start_date,end_date);
+    // console.log(start_date,end_date);
 
     //split the week days
     for(var day in days){
@@ -306,7 +306,7 @@ function BuildClasses(section,details){
             var end_time_moment = moment(end_date+end_time,'DD-MMM-YYYYhh:mma');
             ShiftClassDay(start_time_moment,end_time_moment,weekday);
             
-            console.log(start_date,start_time_moment,end_date,end_time_moment,weekday)
+            // console.log(start_date,start_time_moment,end_date,end_time_moment,weekday)
             // console.log(start_time,moment(start_time,'hh:mma').format(),";",end_time,moment(end_time,'hh:mma').format())
             classes.push({
                 day:days[str].text,
@@ -327,11 +327,11 @@ function BuildClasses(section,details){
 
 function ShiftClassDay(start_time_moment, end_time_moment, weekday){
     while(Number(start_time_moment.day())!=Number(weekday)%7){
-        console.log('start', start_time_moment.day() , weekday)
+        // console.log('start', start_time_moment.day() , weekday)
         start_time_moment.add(1,'d');
     }
     while(Number(end_time_moment.day())!=Number(weekday)%7){
-        console.log('end', start_time_moment.day() , weekday)
+        // console.log('end', end_time_moment.day() , weekday)
         end_time_moment.subtract(1,'d');
     }
     return [start_time_moment,end_time_moment];
@@ -344,9 +344,45 @@ function BuildDetails(raw_info){
         var td = $($(raw_details)[i]).find('td')[0];
         var th = $($(raw_details)[i]).find('th')[0];
         if(GetInnerText(th).split('|').length>1) continue;
-        details[GetInnerText(th)] = GetInnerText(td);
+        if(th&&td){
+            var index = GetInnerText(th).toLowerCase();
+            var content = GetInnerText(td)
+            details[index] = BuildDetailsContent(index,content);
+        }
     }
     return details;
+}
+
+function BuildDetailsContent(index,content){
+    // if("requisite exclusion attributes".indexOf(index) == -1) return content;
+    // console.log(index);
+    switch(index){
+        case 'attributes':
+        // console.log(content);
+        var cc_list = content.split('|');
+        var content = [];
+        for(var i=0; i<cc_list.length; i++){
+            if(cc_list[i].indexOf('4Y')==-1) continue;
+            content.push(cc_list[i].split('(')[1].split(')')[0]);
+        }
+        return content;
+
+        case 'co-requisite':
+        case 'pre-requisite':
+        case 'exclusion':
+
+        list = content.split(/[\,,;]/g);
+        content = [];
+        for(var i=0; i<list.length; i++){
+            var course = list[i].match(/[A-Z]{4} [0-9]{4}[A-Z]*/g);
+            if(course) content.push({course:course[0].split(' ').join('')});
+            else content.push({other:list[i]});
+        }
+        return content;
+
+        default:
+        return content;
+    }
 }
 
 function BuildHeading(h2_str){
