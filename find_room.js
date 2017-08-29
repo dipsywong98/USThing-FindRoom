@@ -24,8 +24,7 @@ const cheerio = require('cheerio');
 var fs = require('fs');
 var moment = require('moment');
 moment().format();
-var day = ['Su','Mo','Tu','We','Th','Fr','Sa'];
-var URL_courses_and_locations = 'https://drive.google.com/uc?export=download&id=0B2wxG8U_9xycYkk0Ry1wQ3NEQ0k';
+var URL_courses_and_locations = 'https://raw.githubusercontent.com/dipsywong98/USThing-FindRoom/master/all.json';
 
 var log = "";
 var week_not_available={};
@@ -43,9 +42,6 @@ request(URL_courses_and_locations, function (error, response, body) {
 
     courses = JSON.parse(body).courses;
     locations = JSON.parse(body).locations;
-
-    // console.log(Object.keys(week[0]));
-    console.log = function(a){log+="\n"+JSON.stringify(a);}
     
     for(var i=0; i<courses.length; i++){
         var course = courses[i];
@@ -54,9 +50,12 @@ request(URL_courses_and_locations, function (error, response, body) {
             if(section.classes=='TBA') continue;
             for(var k=0; k<section.classes.length; k++){
                 var _class = section.classes[k];
-                for(var l=ParseTime(_class.start_time,false); l<ParseTime(_class.end_time,true);l+=.5){
-                    var day_num = day.indexOf(_class.day);;
-                    week_not_available[day_num][l].push(_class.location);
+                for(var m=moment(_class.start_time); m.isBefore(moment(_class.end_time).dayOfYear(m.dayOfYear()),'minute'); m.add(30,'m')){
+                    var l= Number(m.hour())+Number(m.minute()/60);
+                    if('0 30'.indexOf(m.minute())==-1){
+                        console.log(m.minute())
+                    }
+                    week_not_available[m.day()][l].push(_class.location)
                 }
             }
         }
@@ -80,22 +79,4 @@ request(URL_courses_and_locations, function (error, response, body) {
         }
         console.log("The file was saved!");
     });
-
-    // console.log(week);
 });
-
-
-//return string hour.0 or hour.5 in 24 hours notation
-function ParseTime(time_str, round_up){
-    time_str = time_str.replace("AM",":AM").replace("PM",":PM");
-    [hour,min,AMPM] = time_str.split(":");
-    hour = Number(hour); min = Number(min);
-    if(AMPM == "PM" &&hour!=12) hour+=12;
-    if(round_up){
-        min = Math.ceil(min/30)*0.5;
-    }
-    else{
-        min = Math.floor(min/30)*0.5;
-    }
-    return hour + min;
-}

@@ -19,7 +19,7 @@ var availablily = {};
 request(URL_courses_and_locations, function (error, response, body) {
     availability = JSON.parse(body);
     // console.log(Object.keys(availability),' ',search_day);
-    console.log(SearchRoom(1,8));
+    console.log(SearchRoom(2,12));
 })
 
 /**

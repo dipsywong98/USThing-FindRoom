@@ -1,0 +1,316 @@
+{
+"courses":{
+  "MATH1023": {
+    "id": "MATH1023",
+    "department": "MATH",
+    "code": "1023",
+    "name": "Honors Calculus I",
+    "credit": "3",
+    "details": {
+      "attributes": [
+        "QR"
+      ],
+      "pre-requisite": [
+        {
+          "other": "Level 5 or above in HKDSE Mathematics Extended Module M2"
+        }
+      ],
+      "exclusion": [
+        {
+          "other": "AL Pure Mathematics"
+        },
+        {
+          "other": " AL Applied Mathematics"
+        },
+        {
+          "course": "MATH1003"
+        },
+        {
+          "course": "MATH1012"
+        },
+        {
+          "course": "MATH1013"
+        },
+        {
+          "course": "MATH1014"
+        },
+        {
+          "course": "MATH1018"
+        },
+        {
+          "course": "MATH1020"
+        }
+      ],
+      "description": "This is the first in the sequence MATH 1023 â€“ MATH 1024 of honors courses in one-variable calculus, with particular emphasis on rigorous mathematical reasoning. Topics include inequalities, functions and their graphs, vectors, limit and continuity, extreme value theorem, intermediate value theorem derivatives and differentiation rules, mean value theorem, l'HÃ´pital's rule, Taylor expansion, and applications of derivatives."
+    },
+    "sections": [
+      {
+        "name": "L1",
+        "class_number": "3153",
+        "classes": [
+          {
+            "day": "Monday",
+            "start_time": "2017-09-04T10:30:00+08:00",
+            "end_time": "2017-11-27T11:50:00+08:00",
+            "location": "Rm 2464, Lift 25-26 (122)",
+            "note": "N/A"
+          },
+          {
+            "day": "Wednesday",
+            "start_time": "2017-09-06T10:30:00+08:00",
+            "end_time": "2017-11-29T11:50:00+08:00",
+            "location": "Rm 2464, Lift 25-26 (122)",
+            "note": "N/A"
+          }
+        ],
+        "instructors": [
+          "FONG, Tsz Ho"
+        ],
+        "quota": {
+          "total": "112",
+          "hold": {},
+          "public": 112
+        },
+        "enrol": "102",
+        "avail": "10",
+        "wait": "1",
+        "remarks": {}
+      },
+      {
+        "name": "T1A",
+        "class_number": "3155",
+        "classes": [
+          {
+            "day": "Monday",
+            "start_time": "2017-09-04T16:30:00+08:00",
+            "end_time": "2017-11-27T17:20:00+08:00",
+            "location": "Rm 2126A, Lift 19 (28)",
+            "note": "N/A"
+          }
+        ],
+        "instructors": [
+          "FONG, Tsz Ho"
+        ],
+        "quota": {
+          "total": "28",
+          "hold": {},
+          "public": 28
+        },
+        "enrol": "28",
+        "avail": "0",
+        "wait": "3",
+        "remarks": {}
+      },
+      {
+        "name": "T1B",
+        "class_number": "3157",
+        "classes": [
+          {
+            "day": "Tuesday",
+            "start_time": "2017-09-05T12:30:00+08:00",
+            "end_time": "2017-11-28T13:20:00+08:00",
+            "location": "Rm 2126C, Lift 19 (28)",
+            "note": "N/A"
+          }
+        ],
+        "instructors": [
+          "FONG, Tsz Ho"
+        ],
+        "quota": {
+          "total": "28",
+          "hold": {},
+          "public": 28
+        },
+        "enrol": "28",
+        "avail": "0",
+        "wait": "3",
+        "remarks": {}
+      },
+      {
+        "name": "T1C",
+        "class_number": "3158",
+        "classes": [
+          {
+            "day": "Tuesday",
+            "start_time": "2017-09-05T17:30:00+08:00",
+            "end_time": "2017-11-28T18:20:00+08:00",
+            "location": "Rm 2132A, Lift 19 (28)",
+            "note": "N/A"
+          }
+        ],
+        "instructors": [
+          "FONG, Tsz Ho"
+        ],
+        "quota": {
+          "total": "28",
+          "hold": {},
+          "public": 28
+        },
+        "enrol": "18",
+        "avail": "10",
+        "wait": "0",
+        "remarks": {}
+      },
+      {
+        "name": "T1D",
+        "class_number": "3159",
+        "classes": [
+          {
+            "day": "Monday",
+            "start_time": "2017-09-04T17:30:00+08:00",
+            "end_time": "2017-11-27T18:20:00+08:00",
+            "location": "Rm 2126C, Lift 19 (28)",
+            "note": "N/A"
+          }
+        ],
+        "instructors": [
+          "FONG, Tsz Ho"
+        ],
+        "quota": {
+          "total": "28",
+          "hold": {},
+          "public": 28
+        },
+        "enrol": "28",
+        "avail": "0",
+        "wait": "0",
+        "remarks": {}
+      }
+    ]
+  },
+  "ACCT3610": {
+    "id": "ACCT3610",
+    "department": "ACCT",
+    "code": "3610",
+    "name": "Functions of Law in Society and Business",
+    "credit": "3",
+    "details": {
+      "attributes": [
+        "SA"
+      ],
+      "exclusion": [
+        {
+          "course": "ACCT3650"
+        }
+      ],
+      "description": "This course is to provide students with an awareness of the overall legal framework in which businesses in Hong Kong operate so as to enable them to apply the relevant laws and practices to business problems and practical solutions. The main objective is to give students an understanding of how the society and business function in different socio-legal contexts like the legal system and process and its influence on citizensâ€™ social rights and duties; the enforcement and honoring of agreement between private citizens, the use of business organizations in commercial society, the relationship between employee and employer from social and legal perspectives, the growing importance of business ethics and corporate social responsibilities etc."
+    },
+    "sections": [
+      {
+        "name": "L1",
+        "class_number": "1041",
+        "classes": [
+          {
+            "day": "Tuesday",
+            "start_time": "2017-09-05T12:00:00+08:00",
+            "end_time": "2017-11-28T13:20:00+08:00",
+            "location": "Rm 1014, LSK Bldg (80)",
+            "note": "N/A"
+          },
+          {
+            "day": "Thursday",
+            "start_time": "2017-09-07T12:00:00+08:00",
+            "end_time": "2017-11-30T13:20:00+08:00",
+            "location": "Rm 1014, LSK Bldg (80)",
+            "note": "N/A"
+          }
+        ],
+        "instructors": [
+          "LAM, Charles"
+        ],
+        "quota": {
+          "total": "60",
+          "hold": {
+            "ACCT": {
+              "quota": "60",
+              "enrol": "52",
+              "avail": "8"
+            }
+          },
+          "public": 0
+        },
+        "enrol": "55",
+        "avail": "5",
+        "wait": "19",
+        "remarks": {}
+      },
+      {
+        "name": "L2",
+        "class_number": "1042",
+        "classes": [
+          {
+            "day": "Tuesday",
+            "start_time": "2017-09-05T16:30:00+08:00",
+            "end_time": "2017-11-28T17:50:00+08:00",
+            "location": "Rm 1010, LSK Bldg (80)",
+            "note": "N/A"
+          },
+          {
+            "day": "Thursday",
+            "start_time": "2017-09-07T16:30:00+08:00",
+            "end_time": "2017-11-30T17:50:00+08:00",
+            "location": "Rm 1010, LSK Bldg (80)",
+            "note": "N/A"
+          }
+        ],
+        "instructors": [
+          "LAM, Charles"
+        ],
+        "quota": {
+          "total": "60",
+          "hold": {
+            "ACCT": {
+              "quota": "60",
+              "enrol": "19",
+              "avail": "41"
+            }
+          },
+          "public": 0
+        },
+        "enrol": "19",
+        "avail": "41",
+        "wait": "25",
+        "remarks": {}
+      },
+      {
+        "name": "L3",
+        "class_number": "1043",
+        "classes": [
+          {
+            "day": "Monday",
+            "start_time": "2017-09-04T15:00:00+08:00",
+            "end_time": "2017-11-27T16:20:00+08:00",
+            "location": "Rm 1014, LSK Bldg (80)",
+            "note": "N/A"
+          },
+          {
+            "day": "Friday",
+            "start_time": "2017-09-01T10:30:00+08:00",
+            "end_time": "2017-11-24T11:50:00+08:00",
+            "location": "Rm 1014, LSK Bldg (80)",
+            "note": "N/A"
+          }
+        ],
+        "instructors": [
+          "LAM, Charles"
+        ],
+        "quota": {
+          "total": "60",
+          "hold": {
+            "ACCT": {
+              "quota": "60",
+              "enrol": "39",
+              "avail": "21"
+            }
+          },
+          "public": 0
+        },
+        "enrol": "39",
+        "avail": "21",
+        "wait": "30",
+        "remarks": {}
+      }
+    ]
+  }
+}
+}
