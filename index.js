@@ -118,7 +118,7 @@ function GetInnerText(element){
     if(!element) return "ignored";
     var str = '';
     for(var i=0; i<element.children.length; i++){
-        if(element.children[i].data) str += element.children[i].data
+        if(element.children[i]&&element.children[i].data) str += element.children[i].data
         else str += '|';
     }
     return str;
@@ -233,7 +233,13 @@ function BuildSections(raw_sections){
             sections.push({
                 name:name_list[0],
                 class_number:name_list[1].split('(')[1].split(')')[0],
-                classes:[]
+                classes:[],
+                instructors:BuildInstructors(details[3]),
+                quota:BuildQuota(details[4]),
+                enrol:GetInnerText(details[5]),
+                avail:GetInnerText($(details[6]).find('strong')[0]||details[6]),
+                wait:GetInnerText($(details[7]).find('strong')[0]||details[7]),
+                remarks:GetInnerText(details[8])
             })
         }
         else{
@@ -253,6 +259,30 @@ function BuildSections(raw_sections){
         
     }
     return sections;
+}
+
+function BuildQuota(raw_td){
+    var quota_spans = $(raw_td).find('span');
+    var quota_total = GetInnerText(quota_spans[0] || raw_td);
+    var hold_set = {};
+    var quota_hold = 0;
+    if(quota_spans[0]){
+        var quota_detail = $(raw_td).find('.quotadetail')[0];
+        // console.log(quota_detail.children());
+        var hold_list = GetInnerText(quota_detail).match(/[A-Z]{4}: [0-9]+\/[0-9]+\/[0-9]+/g);
+        console.log(hold_list);
+        for(var i=0; i<hold_list.length; i++){
+            var [department,detail] = hold_list[i].split(': ');
+            var [quota,enrol,avail] = detail.split('/');
+            hold_set[department] = {quota:quota,enrol:enrol,avail:avail};
+            quota_hold += Number(quota);
+        }
+    }
+    return {
+        total:quota_total,
+        quota_hold:hold_set,
+        quota_public:quota_total - quota_hold
+    };
 }
 
 function BuildClasses(section,details){
@@ -312,7 +342,6 @@ function BuildClasses(section,details){
                 start_time: start_time_moment.format(),
                 end_time: end_time_moment.format(),
                 location: location,
-                instructors:BuildInstructors(details[3]),
                 note: note
             });
         }
@@ -328,6 +357,7 @@ function BuildClasses(section,details){
 function BuildInstructors(raw_td){
     var instructors = [];
     var raw_a = $(raw_td).find('a');
+    if(!raw_a[0]) return GetInnerText(raw_td);
     for(var i=0; i<raw_a.length; i++){
         instructors.push(GetInnerText(raw_a[i]));
     }
