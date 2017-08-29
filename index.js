@@ -1,4 +1,3 @@
-
 /**index.js
  * Copyright (c) USThing 2017
  * 
@@ -6,62 +5,25 @@
  * Created on 2017-08-24
  * 
  * Generator of all courses json this semester
- * 
- * output files: 
- * courses.json (all courses), 
- * locations.json (all classroom which have courses), 
- * all.json (combine of the previous two)
- * 
- * output structure (course_dict):
- * 
- * courses{
- *   course_id:{
- *      id,
- *      department,
- *      code,
- *      name,
- *      credit
- *      details{            //its content is dynamic, some index may not exist
- *          attrubutes[]
- *          pre-requisite[{other: / course: }]
- *          co-requisite[{other: / course: }]
- *          exclusion[{other: / course: }]
- *          description,
- *          ...
- *      }
- *      sections[
- *          name:
- *          class_number:
- *          classes:[
- *              class{
- *                  day
- *                  start_time
- *                  end_time
- *                  location
- *                  instructors[]
- *          }]
- *      ]
- *   }
- * }
- * 
- * 
  */
 
+//libraries
 var request = require('request');
 const cheerio = require('cheerio');
 var fs = require('fs');
 var moment = require('moment');
-moment().format();
 
+//global variables
 var links = [];
 var courses_dict = {};
 var all_courses = [];
 var locations = [];
 var load_sum = 0;
 var $;
+var year;
+var semester;
 
-// var days = ["Mo","Tu","We","Th","Fr","Sa","Su"];
-//id,text
+var root = 'http://localhost/class/class/w5.ab.ust.hk/';
 var days = {
     Su:{
         id:7,
@@ -111,8 +73,6 @@ var start_end_date = {
         start:"15-AUG-"
     }
 };
- var year;
- var semester;
 
 function GetInnerText(element){
     if(!element) return "ignored";
@@ -128,7 +88,7 @@ function StrContain(str1, str2){
     return str1.indexOf(str2) !== -1;
 }
 
-request('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/COMP.html', function (error, response, body) {
+request(root+'wcq/cgi-bin/1710/subject/ACCT.html', function (error, response, body) {
     
     $ = cheerio.load(body);
 
@@ -147,32 +107,35 @@ request('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/COMP
     console.log(year, semester);
     // console.log(start_end_date,year,semester)
 
-    // GetCourseLinks();
-    // console.log(links);
-    // for(var i=0; i<links.length; i++){
-    //     PushCoursesByURL(links[i]);
-    // }
+    GetCourseLinks();
+    console.log(links);
+    for(var i=0; i<links.length; i++){
+        PushCoursesByURL(links[i]);
+    }
     
     //  PushCoursesByURL('https://w5.ab.ust.hk/wcq/cgi-bin/1710/');
-    PushCoursesByURL('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1710/subject/MATH.html')
+    // PushCoursesByURL('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1640/')
     
 });
 
  function GetCourseLinks(){
     var anchors = $('a.ug');
     for (var i=0; i<anchors.length; i++){
-        links.push("https://w5.ab.ust.hk"+anchors[i].attribs.href);
+        links.push(root+anchors[i].attribs.href.split('https://w5.ab.ust.hk/').join(''));
     }
     var anchors = $('a.pg');
     for (var i=0; i<anchors.length; i++){
-        links.push("https://w5.ab.ust.hk"+anchors[i].attribs.href);
+        links.push(root+anchors[i].attribs.href.split('https://w5.ab.ust.hk/').join(''));
     }
  }
 
 function PushCoursesByURL(url){
+    if(root.indexOf('localhost')!==-1) url+='.html';
     request(url ,function (error ,response ,body){  
 
         $ = cheerio.load(body);
+
+        console.log(url);
 
         var raw_courses = $('div.course');
 
@@ -275,9 +238,9 @@ function BuildQuota(raw_td){
     var quota_hold = 0;
     if(quota_spans[0]){
         var quota_detail = $(raw_td).find('.quotadetail')[0];
-        // console.log(quota_detail.children());
-        var hold_list = GetInnerText(quota_detail).match(/[A-Z]{4}: [0-9]+\/[0-9]+\/[0-9]+/g);
-        console.log(hold_list);
+        // console.log(GetInnerText(quota_detail));
+        var hold_list = GetInnerText(quota_detail).match(/[A-Z]+( \([a-z]+\))*: [0-9]+\/[0-9]+\/[0-9]+/g);
+        // console.log(hold_list);
         for(var i=0; i<hold_list.length; i++){
             var [department,detail] = hold_list[i].split(': ');
             var [quota,enrol,avail] = detail.split('/');
