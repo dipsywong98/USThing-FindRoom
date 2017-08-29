@@ -239,7 +239,7 @@ function BuildSections(raw_sections){
                 enrol:GetInnerText(details[5]),
                 avail:GetInnerText($(details[6]).find('strong')[0]||details[6]),
                 wait:GetInnerText($(details[7]).find('strong')[0]||details[7]),
-                remarks:GetInnerText(details[8])
+                remarks:BuildRemarks(details[8])
             })
         }
         else{
@@ -261,6 +261,13 @@ function BuildSections(raw_sections){
     return sections;
 }
 
+function BuildRemarks(raw_td){
+    var remarks = {};
+    if($(raw_td).find('.consent')[0]) remarks.consent = true;
+    if($(raw_td).find('.classnotes')[0]) remarks.classnotes = GetInnerText($($(raw_td).find('.classnotes')[0]).find('.popupdetail')[0]);
+    return remarks;
+}
+
 function BuildQuota(raw_td){
     var quota_spans = $(raw_td).find('span');
     var quota_total = GetInnerText(quota_spans[0] || raw_td);
@@ -280,8 +287,8 @@ function BuildQuota(raw_td){
     }
     return {
         total:quota_total,
-        quota_hold:hold_set,
-        quota_public:quota_total - quota_hold
+        hold:hold_set,
+        public:quota_total - quota_hold
     };
 }
 
