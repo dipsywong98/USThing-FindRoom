@@ -76,7 +76,7 @@ It is just an array of locations which may have lessons
 
 ##### `all.json` :
 
-```JSON
+```
 {
     "courses":{
       //content of courses.json
@@ -109,7 +109,7 @@ example:
 
 `SearchRoom(2,12)` returns:
 
-```JSON
+```
 { '3':
    [ 'Lecture Theater J (300)',
      'Rm 6591, Lift 31-32 (60)',
