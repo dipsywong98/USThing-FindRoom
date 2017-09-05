@@ -6,22 +6,36 @@
  * 
  * Get the locations with longest available time since certain day certain time until 0000AM
  * 
+ * GET
+ * |weekday | interested weekday | 
+ * |time    | start time
+ * 
  */
 
 var request = require('request');
 const cheerio = require('cheerio');
 var fs = require('fs');
 var moment = require('moment');
+var express = require('express');
+var router = express.Router();
+var app = express();
 
 var URL_courses_and_locations = 'https://drive.google.com/uc?export=download&id=0B2wxG8U_9xycUVB2RGRoU215bTA';
 var availablily = {};
 
-request(URL_courses_and_locations, function (error, response, body) {
-    availability = JSON.parse(body);
-    // console.log(Object.keys(availability),' ',search_day);
-    console.log(SearchRoom(2,12));
-})
 
+app.get('/',function (req, res){
+    request(URL_courses_and_locations, function (error, response, body) {
+        availability = JSON.parse(body);
+        
+        var weekday = req.query.weekday || 0;
+        var time = req.quert.time || 8;
+        var rooms_list_by_time = SearchRoom(weekday,time);
+        res.send(rooms_list_by_time);
+    })
+    // console.log('hi');
+})
+app.listen(3000);
 /**
  * return a object containing different length of time have available room
  * {
