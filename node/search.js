@@ -28,10 +28,18 @@ app.get('/',function (req, res){
     request(URL_courses_and_locations, function (error, response, body) {
         availability = JSON.parse(body);
         
-        var weekday = req.query.weekday || 0;
-        var time = req.quert.time || 8;
+        console.log(req.query);
+
+        var weekday = Number(req.query.weekday) || 0;
+        var time = Number(req.query.time) || 8;
         var rooms_list_by_time = SearchRoom(weekday,time);
-        res.send(rooms_list_by_time);
+        res.send({
+            'query':{
+                'weekday':weekday,
+                'time':time
+            },
+            'result':rooms_list_by_time
+        });
     })
     // console.log('hi');
 })
