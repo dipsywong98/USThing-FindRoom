@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Search Available Room in Random Place</title>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <script src="js/vue.min.js"></script>
+        <script src="js/moment.min.js"></script>
+    </head>
+    <script>
+        var days = [
+    {
+        day:0,
+        text:"Sunday"
+    },
+    {
+        day:1,
+        text:"Monday"
+    },
+    {
+        day:2,
+        text:"Tuesday"
+    },
+    {
+        day:3,
+        text:"Wednesday"
+    },
+    {
+        day:4,
+        text:"Thursday"
+    },
+    {
+        day:5,
+        text:"Friday"
+    },
+    {
+        day:6,
+        text:"Saturday"
+    }
+]
+var times = [];
+var m = moment("08:00","HH:mm");
+while (m.isBefore(moment("20:01","HH:mm"))){
+    times.push({
+        time:m.hour()+"."+m.minute()/60,
+        text:m.format("HH:mm")
+    });
+    m.add(30,"minutes");
+}
+
+    </script>
+    <body>
+        <p> Day:
+        <select id="select_day">
+            <option v-for="day in days" v-bind:value="day.day">{{day.text}}</option>
+        </select>
+        </p>
+
+        <p> Start Time:
+            <select id="select_time">
+                    <option v-for="time in times" v-bind:value="time.time">{{time.text}}</option>
+                </select>
+        </p>
+    </body>
+
+    <script>
+var day_pick = new Vue({
+  el: '#select_day',
+  data: {
+    days:days 
+  }
+})
+var time_pick = new Vue({
+  el: '#select_time',
+  data: {
+    times:times 
+  }
+})
+    </script>
+</html>
