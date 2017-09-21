@@ -109,9 +109,9 @@ request(root+'wcq/cgi-bin/1710/subject/ACCT.html', function (error, response, bo
 
     GetCourseLinks();
     console.log(links);
-    for(var i=0; i<links.length; i++){
-        PushCoursesByURL(links[i]);
-    }
+    // for(var i=0; i<links.length; i++){
+        PushCoursesByURL(links[0],0);
+    // }
     
     //  PushCoursesByURL('https://w5.ab.ust.hk/wcq/cgi-bin/1710/');
     // PushCoursesByURL('http://localhost/class/class/w5.ab.ust.hk/wcq/cgi-bin/1640/')
@@ -129,7 +129,7 @@ request(root+'wcq/cgi-bin/1710/subject/ACCT.html', function (error, response, bo
     }
  }
 
-function PushCoursesByURL(url){
+function PushCoursesByURL(url,links_index){
     if(root.indexOf('localhost')!==-1) url+='.html';
     request(url ,function (error ,response ,body){  
 
@@ -181,6 +181,9 @@ function PushCoursesByURL(url){
             }); 
             // console.log(all_courses);
         }
+
+        console.log("Retreived : "+(links_index+1)+"/"+links.length)
+        if(++links_index<links.length) PushCoursesByURL(links[links_index],links_index);
     })
 }
 
