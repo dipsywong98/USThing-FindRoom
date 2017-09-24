@@ -88,10 +88,10 @@
                     for(var key in data.result){
                         result.push({
                             duration:Number(key),
-                            location:data.result[key]
+                            locations:data.result[key]
                         })
                     }
-                    result.sort((a,b)=>{return a.duration<b.duration})
+                    result = result.sort(function(a,b){return Number(b.duration)-Number(a.duration)})
                     console.log(result)
                     result_panel.results = result;
                     if(data.query.weekday == document.getElementById('select_day').value && data.query.time == document.getElementById('select_time').value){
@@ -132,15 +132,15 @@
                     <div class="panel-footer"></div>
                 </div>
                 </div>
-            <div class="panel panel-default card" v-for="(result,time) in results">
+            <div class="panel panel-default card" v-for="data in results">
               <div class="panel-heading card-header">
                 <h4 class="panel-title">
-                  <a data-toggle="collapse" :href="GetHref(time)">{{time}} hours free ({{result.length}})</a>
+                  <a data-toggle="collapse" :href="GetHref(data.duration)">{{data.duration}} hours free ({{data.locations.length}})</a>
                 </h4>
               </div>
-              <div class="panel-collapse collapse card-block" :id="GetId(time)">
+              <div class="panel-collapse collapse card-block" :id="GetId(data.duration)">
                 <ul class="list-group">
-                  <li class="list-group-item" v-for="location in result">{{location}}</li>
+                  <li class="list-group-item" v-for="location in data.locations">{{location}}</li>
                 </ul>
                 <div class="panel-footer"></div>
               </div>
@@ -171,9 +171,11 @@ var result_panel = new Vue({
   },
   methods:{
     GetHref:function GetHref(key){
+        key=String(key);
         return '#c'+key.replace('.','_');
     },
     GetId:function GetId(key){
+        key=String(key);
         return 'c'+key.replace('.','_');
     }
     }
