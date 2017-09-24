@@ -67,6 +67,8 @@
 
     </script>
     <body>
+        <div class="container">
+            <h2> Find Available Room</h2>
         <p> Day:
             <select id="select_day">
                 <option v-for="day in days" v-bind:value="day.day">{{day.text}}</option>
@@ -78,31 +80,37 @@
                 <option v-for="time in times" v-bind:value="time.time">{{time.text}}</option>
             </select>
         </p>
-        <button onclick="Search()">Search</button>
+        <button onclick="Search()" class="btn btn-primary">Search</button>
 
         <div class="panel-group" id="result">
-            <div class="panel panel-default" v-for="(result,time) in results">
-              <div class="panel-heading">
+            <div class="panel panel-default card" v-if="!results">
+                <div class="panel-heading card-header">
+                    <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#demo">You Result Goes Here (Number of available rooms)</a>
+                    </h4>
+                </div>
+                <div class="panel-collapse collapse card-block" id="demo">
+                    <ul class="list-group">
+                    <li class="list-group-item">Available rooms</li>
+                    </ul>
+                    <div class="panel-footer"></div>
+                </div>
+                </div>
+            <div class="panel panel-default card" v-for="(result,time) in results">
+              <div class="panel-heading card-header">
                 <h4 class="panel-title">
-                  <a data-toggle="collapse" :href="GetHref(time)">{{time}}</a>
+                  <a data-toggle="collapse" :href="GetHref(time)">{{time}} hours free ({{result.length}})</a>
                 </h4>
               </div>
-              <div class="panel-collapse collapse" :id="time">
+              <div class="panel-collapse collapse card-block" :id="GetId(time)">
                 <ul class="list-group">
                   <li class="list-group-item" v-for="location in result">{{location}}</li>
                 </ul>
-                <div class="panel-footer">Footer</div>
+                <div class="panel-footer"></div>
               </div>
             </div>
           </div>
-          <!-- <table>
-            <tbody id="result">
-                <tr v-for="(result,time) in results">
-                    <td>{{time}}</td>
-                    <td v-for="location in result">{{location}}</td>
-                </tr>
-            </tbody>
-          </table> -->
+        </div>
     </body>
 
     <script>
@@ -122,12 +130,15 @@ var time_pick = new Vue({
 var result_panel = new Vue({
   el: '#result',
   data: {
-    results:[]
+    results:false
   },
   methods:{
-      GetHref:function GetHref(key){
-        return '#'+key;
-        }
+    GetHref:function GetHref(key){
+        return '#c'+key.replace('.','_');
+    },
+    GetId:function GetId(key){
+        return 'c'+key.replace('.','_');
+    }
     }
 })
     </script>
