@@ -84,7 +84,16 @@
                 context: document.body
                 }).done(function(data) {
                     console.log(data);
-                    result_panel.results = data.result;
+                    var result = [];
+                    for(var key in data.result){
+                        result.push({
+                            duration:Number(key),
+                            location:data.result[key]
+                        })
+                    }
+                    result.sort((a,b)=>{return a.duration<b.duration})
+                    console.log(result)
+                    result_panel.results = result;
                     if(data.query.weekday == document.getElementById('select_day').value && data.query.time == document.getElementById('select_time').value){
                         result_panel.loading = false;
                     }
