@@ -9,6 +9,28 @@
         <script src="js/vue.min.js"></script>
         <script src="js/moment.min.js"></script>
     </head>
+    <style>
+            .loader {
+              border: 5px solid #f3f3f3;
+              border-radius: 50%;
+              border-top: 5px solid #3498db;
+              width: 50px;
+              height: 50px;
+              -webkit-animation: spin 2s linear infinite;
+              animation: spin 2s linear infinite;
+              margin: 10px
+            }
+            
+            @-webkit-keyframes spin {
+              0% { -webkit-transform: rotate(0deg); }
+              100% { -webkit-transform: rotate(360deg); }
+            }
+            
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            </style>
     <script>
         var url_for_search = "http://localhost:3000/";
 
@@ -55,13 +77,17 @@
         function Search(){
             var day = $('#select_day')[0].value;
             var time = $('#select_time')[0].value;
+            result_panel.loading = true;
             console.log(`?weekday=${day}&time=${time}`)
             $.ajax({
                 url: url_for_search+`?weekday=${day}&time=${time}`,
                 context: document.body
                 }).done(function(data) {
-                    console.log(data)
+                    console.log(data);
                     result_panel.results = data.result;
+                    if(data.query.weekday == document.getElementById('select_day').value && data.query.time == document.getElementById('select_time').value){
+                        result_panel.loading = false;
+                    }
             });
         }
 
@@ -82,8 +108,9 @@
         </p>
         <button onclick="Search()" class="btn btn-primary">Search</button>
 
-        <div class="panel-group" id="result">
-            <div class="panel panel-default card" v-if="!results">
+        <div class="panel-group" id="result" style="margin-top:10px">
+            <div class="loader" v-if="loading"></div>
+            <div class="panel panel-default card" v-if="!loading&&!results">
                 <div class="panel-heading card-header">
                     <h4 class="panel-title">
                     <a data-toggle="collapse" href="#demo">You Result Goes Here (Number of available rooms)</a>
@@ -130,7 +157,8 @@ var time_pick = new Vue({
 var result_panel = new Vue({
   el: '#result',
   data: {
-    results:false
+    results:false,
+    loading:false
   },
   methods:{
     GetHref:function GetHref(key){
