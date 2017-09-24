@@ -10,27 +10,27 @@
         <script src="js/moment.min.js"></script>
     </head>
     <style>
-            .loader {
-              border: 5px solid #f3f3f3;
-              border-radius: 50%;
-              border-top: 5px solid #3498db;
-              width: 50px;
-              height: 50px;
-              -webkit-animation: spin 2s linear infinite;
-              animation: spin 2s linear infinite;
-              margin: 10px
-            }
-            
-            @-webkit-keyframes spin {
-              0% { -webkit-transform: rotate(0deg); }
-              100% { -webkit-transform: rotate(360deg); }
-            }
-            
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-            </style>
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 5px solid #3498db;
+            width: 50px;
+            height: 50px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+            margin: 10px
+        }
+        
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        </style>
     <script>
 
 
@@ -82,7 +82,7 @@ while (m.isBefore(moment("20:01","HH:mm"))){
     m.add(30,"minutes");
 }
 
-        /**
+/**
  * return a object containing different length of time have available room
  * {
  *      <length_of_available_time>:[list of available locations]
@@ -92,7 +92,7 @@ while (m.isBefore(moment("20:01","HH:mm"))){
  */
 function SearchRoom(search_day, search_time){
     var day = availability[search_day];
-    var possible_locations = day[search_time];
+    var possible_locations = day[search_time].slice();
     var time = Number(search_time)+0.5;
     var loc_by_length = {};
     while(possible_locations.length>0 && time<24){
