@@ -2,9 +2,13 @@
 
 Finding secret available locations in UST
 
-- `index.js` get all courses in UST, outputs `all.json`, `locations.json`, `courses.json`, and `courses_dict.json`.
-- `find_room.js` out available locations in different time in a week `places.json`.
-- `search.js` returns a dictionary of available locations in different length of available time, given a start time and a day of week.
+- `node/` :server, get course datas and available room calculations API,
+  - `index.js` :get all courses in UST, outputs `all.json`, `locations.json`, `courses.json`, and `courses_dict.json`.
+  - `find_room.js` :out available locations in different time in a week `places.json`.
+  - `search.js` :returns a dictionary of available locations in different length of available time, given a start time and a day of week.
+  
+- `view/` :UI, using the node script's API
+- `offline/` :UI, no need server
 
 ### structures:
 
