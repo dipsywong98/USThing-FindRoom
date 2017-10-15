@@ -39,7 +39,10 @@ $.ajax({
     url: 'places.json',
     context: document.body
 }).done(function(data) {
-    availability = data
+    availability = data;
+    var m = moment(Date());
+    $('#select_day')[0].value = m.day();
+    $('#select_time')[0].value = Math.min(24,Math.max(8,m.hour()+Math.floor(m.minute()/30)*0.5))
 });
 
 var days = [
