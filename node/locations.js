@@ -37,6 +37,7 @@ var PushLocationTimetable = ()=>{
                 location_timetable[_class.location].push({
                     id:course.id,
                     name:course.name,
+                    section:section.name,
                     instructors:course.instructors,
                     day:_class.day,
                     start_time:_class.start_time,
@@ -56,12 +57,12 @@ var RankLocation = (location_str)=>{
     if(StrContain(location_str,'Lecture Theater ')){
         return location_str.match(/ [A-L] /g)[0].charCodeAt(1) - 65;
     }
-    if(StrContain(location_str,'LTL')) return 76;
+    if(StrContain(location_str,'LTL')) return 10076;
     location_str = location_str.replace('G','0');
     if(location_str.match(/[0-9]{4}/g)){
         var room_no = Number(location_str.match(/[0-9]{4}/g)[0]);
         if(StrContain(location_str,'LSK')) return room_no+20000;
-        if(StrContain(location_str,'CYT')) return room_no+10000+Number(StrContain(location_str,'UG')*500);
+        if(StrContain(location_str,'CYT')) return room_no+10000+Number(StrContain(location_str,'U')*500);
         return room_no;
     }
     return 30000;
