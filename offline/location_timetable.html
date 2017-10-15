@@ -76,6 +76,7 @@ var days = [
     <body>
         <div class="container" id="app">
             <h2> Timetable of Room</h2>
+            <p><a href="https://github.com/dipsywong98/USThing-FindRoom">source code</a> | <a href="index.html">find room in random place</a></p>
         <p> Room:
             <select onchange="app.timetable = location_timetable.filter((a)=>{return a[0].location==$('select')[0].value})">
                 <option v-for="detail in location_timetable" :value="detail[0].location">{{detail[0].location}}</option>
