@@ -23,7 +23,8 @@ var $;
 var year;
 var semester;
 
-var root = 'http://localhost/class/class/w5.ab.ust.hk/';
+// var root = 'http://localhost/class/class/w5.ab.ust.hk/';
+var root = 'https://w5.ab.ust.hk/';
 var days = {
     Su:{
         id:7,
@@ -88,7 +89,14 @@ function StrContain(str1, str2){
     return str1.indexOf(str2) !== -1;
 }
 
-request(root+'wcq/cgi-bin/1710/subject/ACCT.html', function (error, response, body) {
+function sleep(millis){
+    var date = new Date();
+    var curDate = null;
+    do { curDate = new Date(); }
+    while(curDate-date < millis);
+}
+
+request(root+'wcq/cgi-bin/1710/subject/ACCT', function (error, response, body) {
     
     $ = cheerio.load(body);
 
@@ -131,6 +139,7 @@ request(root+'wcq/cgi-bin/1710/subject/ACCT.html', function (error, response, bo
 
 function PushCoursesByURL(url,links_index){
     if(root.indexOf('localhost')!==-1) url+='.html';
+    sleep(300);
     request(url ,function (error ,response ,body){  
 
         $ = cheerio.load(body);
