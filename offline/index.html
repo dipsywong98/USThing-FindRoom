@@ -55,6 +55,16 @@
         $('#select_time')[0].value = Math.min(24, Math.max(8, m.hour() + Math.floor(m.minute() / 30) * 0.5))
     });
 
+    $.ajax({
+        url: 'https://api.github.com/repos/dipsywong98/USThing-FindRoom/commits/master',
+        context: document.body
+    }).done(function(data){
+        app.updates = {
+            message:data.commit.message,
+            time:moment(data.commit.committer.date).format('YYYY-MM-DD HH:mm:ss')
+        }
+    })
+
     var days = [
         {
             day: 0,
@@ -197,6 +207,7 @@
                 </div>
             </div>
         </div>
+        <p v-if="!!updates" style="margin-top:50px">Last Update : {{updates.message}} ({{updates.time}})</p>
     </div>
 </body>
 
@@ -208,7 +219,8 @@
             days: days,
             times: times,
             results: false,
-            loading: false
+            loading: false,
+            updates:false
         },
         methods: {
             GetHref: function GetHref(key) {
