@@ -24,7 +24,8 @@ const cheerio = require('cheerio');
 var fs = require('fs');
 var moment = require('moment');
 moment().format();
-var URL_courses_and_locations = 'https://raw.githubusercontent.com/dipsywong98/USThing-FindRoom/master/all.json';
+// var URL_courses_and_locations = 'http://localhost:3000/all.json';
+var all = require('./all.json')
 
 var log = "";
 var week_not_available={};
@@ -38,10 +39,12 @@ for(var i=0; i<7;i++){
     }
 }
 
-request(URL_courses_and_locations, function (error, response, body) {
-
-    courses = JSON.parse(body).courses;
-    locations = JSON.parse(body).locations;
+// request(URL_courses_and_locations, function (error, response, body) {
+    // console.log('request', error)
+    // courses = JSON.parse(body).courses;
+    // locations = JSON.parse(body).locations;
+    courses = all.courses;
+    locations = all.locations;
     
     for(var i=0; i<courses.length; i++){
         var course = courses[i];
@@ -79,4 +82,4 @@ request(URL_courses_and_locations, function (error, response, body) {
         }
         console.log("The file was saved!");
     });
-});
+// });
