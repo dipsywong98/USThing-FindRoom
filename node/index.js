@@ -96,7 +96,7 @@ function sleep(millis){
     while(curDate-date < millis);
 }
 
-request(root+'wcq/cgi-bin/1730/subject/ACCT', function (error, response, body) {
+request(root+'wcq/cgi-bin/1810/subject/ACCT', function (error, response, body) {
     
     $ = cheerio.load(body);
 
